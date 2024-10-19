@@ -128,30 +128,31 @@ int main()
   glBindVertexArray(0);
    
   Shader shader("shader/shader.vs","shader/shader.fs"); 
+  
+  int width, height, nrChannels;
+  unsigned char *data = stbi_load("wall.jpg", &width, &height, &nrChannels, 0);
 
- unsigned int texture;
+  unsigned int texture;
   glGenTextures(1, &texture);
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texture);
 
  
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);  
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);  
   
-  int width, height, nrChannels;
-  unsigned char *data = stbi_load("wall.jpg", &width, &height, &nrChannels, 0);
-
-  if (data)
-  {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-  }
-  else
+  if (!data)
   {
     std::cout << "Failed to load texture" << std::endl;
   };
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  glGenerateMipmap(GL_TEXTURE_2D);
+
   stbi_image_free(data);
+  glBindTexture(GL_TEXTURE_2D,0);
   //the LOOP
   while(!glfwWindowShouldClose(window))
   {
@@ -166,6 +167,8 @@ int main()
     //render
     glClearColor(0.1f,0.2f,0.5f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     shader.use();
 

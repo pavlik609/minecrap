@@ -86,7 +86,7 @@ int main()
 
   glBindVertexArray(0);
    
-  Shader shader("/home/rob/cpp/gl_game/shader/shader.vs","/home/rob/cpp/gl_game/shader/shader.fs"); 
+  Shader shader("shader/shader.vs","shader/shader.fs"); 
 
  unsigned int texture;
   glGenTextures(1, &texture);
@@ -99,7 +99,7 @@ int main()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);  
   
   int width, height, nrChannels;
-  unsigned char *data = stbi_load("/home/rob/cpp/gl_game/wall.jpg", &width, &height, &nrChannels, 0);
+  unsigned char *data = stbi_load("wall.jpg", &width, &height, &nrChannels, 0);
 
   if (data)
   {

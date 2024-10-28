@@ -113,6 +113,9 @@ int main()
 
   Shader shader("shader/shader.vs","shader/shader.fs"); 
 
+  Texture Wall("./wall.jpg",GL_TEXTURE_2D,GL_TEXTURE0,GL_RGB,GL_UNSIGNED_BYTE);
+  Wall.textUnit(shader, "tex0" ,0);
+
   VAO VAO1;
   VAO1.Bind();
 
@@ -126,7 +129,6 @@ int main()
   VAO1.Unbind();
   VBO1.Unbind();
 
-  Texture Wall("./wall.jpg",GL_TEXTURE0);
   
   //the LOOP
   while(!glfwWindowShouldClose(window))

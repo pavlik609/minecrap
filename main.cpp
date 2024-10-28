@@ -33,7 +33,7 @@ int main()
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   
-  GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGTHT, "opengl game", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGTHT, "gl game", NULL, NULL);
   if (window == NULL)
   {
     std::cout <<"GLFW FAILED TO CREATE A WINDOW \n"; 
@@ -131,8 +131,14 @@ int main()
 
   
   //the LOOP
+  double last =0.0f;
+  char title[128];
   while(!glfwWindowShouldClose(window))
   {
+    double now=glfwGetTime();
+    double delta=now-last;
+    snprintf(title,128, "gl game | fps: %.0f",1.0f/delta);
+    glfwSetWindowTitle(window,title);
     //input
     processInput(window);
     // test 
@@ -173,7 +179,9 @@ int main()
 
     //swap the rendering bufferd and get io
     glfwSwapBuffers(window);
-    glfwPollEvents();    
+    glfwPollEvents();
+    last = now;
+
   };
   Wall.Delete();
   VAO1.Delete();

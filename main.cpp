@@ -15,6 +15,9 @@
 //my stuff
 #include "include/shader/shader.h"
 #include "include/textures/texture.h"
+#include "include/objects/VAO.h"
+#include "include/objects/VBO.h"
+#include "include/objects/EBO.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -107,29 +110,22 @@ int main()
         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
   };
-  //pls less buffers why 3 ???
-  unsigned int VBO, VAO;
-  glGenBuffers(1, &VBO);
-  glGenVertexArrays(1, &VAO);  
 
-  glBindVertexArray(VAO);
+  Shader shader("shader/shader.vs","shader/shader.fs"); 
 
-  glBindBuffer(GL_ARRAY_BUFFER,VBO);
-  glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
+  VAO VAO1;
+  VAO1.Bind();
+
+  VBO VBO1(vertices, sizeof(vertices));
 
   // position attribute
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-  glEnableVertexAttribArray(0);
+  VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
   // uv cords attribute
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
-  glEnableVertexAttribArray(1);
-
-  glBindBuffer(GL_ARRAY_BUFFER,0);
-
-  glBindVertexArray(0);
-   
-  Shader shader("shader/shader.vs","shader/shader.fs"); 
+  VAO1.LinkAttrib(VBO1, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3*sizeof(float)));
   
+  VAO1.Unbind();
+  VBO1.Unbind();
+
   Texture Wall("./wall.jpg",GL_TEXTURE0);
   
   //the LOOP
@@ -162,8 +158,8 @@ int main()
     shader.setMat4("projection",projection);
     shader.setMat4("view",view);
 
-    glBindVertexArray(VAO);
-
+    VAO1.Bind();
+    
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, (float)glfwGetTime()*glm::radians(50.0f), glm::vec3(1.0f, 0.3f, 0.5f)); 
     shader.setMat4("model", model);
@@ -178,6 +174,9 @@ int main()
     glfwPollEvents();    
   };
   Wall.Delete();
+  VAO1.Delete();
+  VBO1.Delete();
+
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
